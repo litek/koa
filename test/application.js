@@ -1082,3 +1082,27 @@ describe('app.response', function(){
     .expect(204, done);
   })
 })
+
+describe('app.callback', function(){
+  it('should catch Error objects', function(done) {
+    var app = koa();
+    app.use(function *(next) {
+      yield Promise.reject(new Error('Object'));
+    });
+
+    request(app.listen())
+      .get('/')
+      .expect(500, done);
+  })
+
+  it('should catch other errors', function(done) {
+    var app = koa();
+    app.use(function *(next) {
+      yield Promise.reject('String');
+    });
+
+    request(app.listen())
+      .get('/')
+      .expect(500, done);
+  })
+})
